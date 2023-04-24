@@ -6,19 +6,29 @@ ARG uid
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
+    build-essential \
+    libicu-dev \
+    libzip-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    locales \
+    jpegoptim optipng pngquant gifsicle \
     git \
     curl \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
     zip \
-    unzip
+    unzip\
+    vim \
+    wget \
+    zsh
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd opcache
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
