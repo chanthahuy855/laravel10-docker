@@ -22,13 +22,29 @@ RUN apt-get update && apt-get install -y \
     unzip\
     vim \
     wget \
-    zsh
+    zsh \
+    redis-tools
+
+
+# Install Node.js and NPM
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
+RUN apt-get install -y nodejs
+
+# Install NPM
+RUN npm install --global npm
+
+# Install NPM packages
+WORKDIR /var/www/html
+COPY package.json /var/www/html
+RUN npm install
+
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd opcache
+RUN apt-get update && apt-get install -y libpq-dev && docker-php-ext-install pgsql pdo pdo_pgsql mbstring exif pcntl bcmath gd pdo_mysql
+
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
